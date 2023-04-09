@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Post,
   Request,
   Response,
@@ -24,6 +25,15 @@ export class AuthController {
   public async login(@Request() req, @Response() res) {
     const tokens = await this.authService.createSession(req.user);
     res.cookie('auth', tokens, { httpOnly: true });
+    res.send({
+      message: 'success',
+    });
+  }
+
+  @UseGuards(LocalAuthGuard)
+  @Delete('/logout')
+  public async logout(@Response() res) {
+    res.clearCookie('auth', { httpOnly: true });
     res.send({
       message: 'success',
     });

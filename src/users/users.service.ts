@@ -8,10 +8,12 @@ export class UsersService {
 
   public getAll(): Promise<User[]> {
     return this.prismaService.user.findMany({
-      select: {
-        id: true,
-        email: true,
-        role: true,
+      include: {
+        books: {
+          include: {
+            book: true,
+          },
+        },
       },
     });
   }

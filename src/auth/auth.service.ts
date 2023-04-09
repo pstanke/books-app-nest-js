@@ -3,12 +3,14 @@ import { UsersService } from '../users/users.service';
 import { RegisterDTO } from './dtos/register.dto';
 import * as bcrypt from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AuthService {
   constructor(
     private usersService: UsersService,
     private jwtService: JwtService,
+    private configService: ConfigService,
   ) {}
 
   public async register(registrationData: RegisterDTO) {
@@ -35,8 +37,8 @@ export class AuthService {
     const payload = { email: user.email, sub: user.id };
 
     const accessToken = this.jwtService.sign(payload, {
-      secret: 'q1w2e3r4t5y6',
-      expiresIn: '12h',
+      secret: this.configService.get('jwt.secret'),
+      expiresIn: this.configService.get('jwt.expiresIn'),
     });
 
     return {
